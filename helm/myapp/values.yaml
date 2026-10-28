@@ -5,6 +5,19 @@ image:
   tag: "1.0.0"
   pullPolicy: IfNotPresent
 
+containerPort: 8090
+
+vault:
+  server: http://vault.vault.svc:8200
+  kvMount: secret
+  authMount: kubernetes
+  role: myapp
+
+externalSecret:
+  vaultKey: myapp
+  targetSecretName: myapp-secrets
+  refreshInterval: 1m
+
 service:
   type: ClusterIP
   port: 8090

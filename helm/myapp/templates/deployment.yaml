@@ -9,16 +9,6 @@ spec:
       app: myapp
   template:
     metadata:
-      annotations:
-        vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/role: "myapp"
-        vault.hashicorp.com/agent-inject-secret-config: "secret/data/myapp"
-        vault.hashicorp.com/agent-inject-template-config: |
-          {{`{{- with secret "secret/data/myapp" -}}`}}
-          export DB_USER="{{`{{ .Data.data.DB_USER }}`}}"
-          export DB_PASS="{{`{{ .Data.data.DB_PASS }}`}}"
-          export API_KEY="{{`{{ .Data.data.API_KEY }}`}}"
-          {{`{{- end }}`}}
       labels:
         app: myapp
     spec:
@@ -26,9 +16,9 @@ spec:
       containers:
         - name: myapp
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: IfNotPresent
-          command: ["/bin/sh", "-c"]
-          args:
-            - . /vault/secrets/config && ./start-app.sh
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.externalSecret.targetSecretName }}
           ports:
-            - containerPort: 8080
+            - containerPort: {{ .Values.containerPort }}
