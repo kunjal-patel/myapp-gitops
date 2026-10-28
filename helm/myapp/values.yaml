@@ -1,13 +1,13 @@
-replicaCount: 2
+replicaCount: 1
 
 image:
-  repository: localhost:5000/myapp
-  tag: "1"
+  repository: myuser/myapp
+  tag: "1.0.0"
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 8090
 
 ingress:
   enabled: false
